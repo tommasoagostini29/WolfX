@@ -56,7 +56,7 @@ export default function Dashboard() {
   return (
     <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto", paddingBottom: "80px" }}>
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
-        <h2 style={{ letterSpacing: "1px" }}>WolfX <span style={{ color: "#00d1b2", fontSize: "0.6em" }}>BETA</span></h2>
+        <h2 style={{ letterSpacing: "1px" }}>WolfX <span style={{ color: "#00d1b2", fontSize: "0.6em" }}>Live</span></h2>
         <button onClick={() => logout().then(() => navigate("/login"))} style={{ padding: "8px 16px", background: "#333", color: "white", border: "1px solid #555", borderRadius: "4px", cursor: "pointer" }}>
           Esci
         </button>
