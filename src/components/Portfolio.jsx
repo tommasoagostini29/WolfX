@@ -18,7 +18,7 @@ export default function Portfolio({ portfolio, coins, onSellClick }) {
       };
     })
     // Mostriamo l'asset se è maggiore di 0.000000001 (praticamente zero)
-    .filter((asset) => asset.amount > 0.000000001);
+    .filter((asset) => asset.amount > 0);
 
   const totalValue = assets.reduce((sum, asset) => sum + asset.value, 0);
 
