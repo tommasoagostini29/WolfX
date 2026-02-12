@@ -17,11 +17,9 @@ export default function Portfolio({ portfolio, coins, onSellClick }) {
         currentPrice: coinData ? coinData.current_price : 0
       };
     })
-    // MODIFICA QUI: Filtriamo via tutto ciò che è praticamente zero
-    // Usiamo 0.000001 invece di 0 secco per evitare problemi di virgola mobile
-    .filter((asset) => asset.amount > 0.00000000001); 
+    // Mostriamo l'asset se è maggiore di 0.000000001 (praticamente zero)
+    .filter((asset) => asset.amount > 0.000000001);
 
-  // Calcolo totale
   const totalValue = assets.reduce((sum, asset) => sum + asset.value, 0);
 
   return (
@@ -30,8 +28,7 @@ export default function Portfolio({ portfolio, coins, onSellClick }) {
       
       {assets.length === 0 ? (
         <div style={{ textAlign: "center", padding: "20px", color: "#888" }}>
-          <p>Il tuo portafoglio è vuoto.</p>
-          <small>Compra crypto dal mercato qui sotto per iniziare!</small>
+          <p>Portafoglio vuoto.</p>
         </div>
       ) : (
         <>
@@ -47,7 +44,10 @@ export default function Portfolio({ portfolio, coins, onSellClick }) {
                     {asset.image && <img src={asset.image} alt={asset.name} style={{ width: "24px", borderRadius: "50%" }} />}
                     <div>
                       <div style={{ fontWeight: "bold" }}>{asset.name}</div>
-                      <div style={{ fontSize: "0.8em", color: "#888" }}>{asset.amount.toFixed(4)} {asset.symbol.toUpperCase()}</div>
+                      {/* QUI: Mostriamo fino a 8 decimali per precisione assoluta */}
+                      <div style={{ fontSize: "0.8em", color: "#888" }}>
+                        {asset.amount.toFixed(8).replace(/\.?0+$/, "")} {asset.symbol.toUpperCase()}
+                      </div>
                     </div>
                   </td>
                   <td style={{ textAlign: "right", paddingRight: "15px" }}>

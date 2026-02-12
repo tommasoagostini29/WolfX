@@ -4,32 +4,38 @@ import { db } from "../firebase";
 import { doc, updateDoc, increment } from "firebase/firestore";
 
 export default function TradeModal({ coin, userData, currentUser, onClose, initialMode = "buy" }) {
-  const [mode, setMode] = useState(initialMode); // "buy" o "sell"
-  const [amountInput, setAmountInput] = useState(""); // Input dell'utente
+  const [mode, setMode] = useState(initialMode);
+  const [amountInput, setAmountInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Dati utili
-  const price = coin.current_price || coin.currentPrice; // Gestiamo entrambi i formati
-  const ownedAmount = userData?.portfolio?.[coin.id] || 0; // Quante ne possiedi
+  const price = coin.current_price || coin.currentPrice;
+  const ownedAmount = userData?.portfolio?.[coin.id] || 0;
   const userBalance = userData?.balance || 0;
-
-  // Calcoli dinamici
   const isBuying = mode === "buy";
   
-  // Se compro: Input è USD -> Calcolo Crypto
-  // Se vendo: Input è Crypto -> Calcolo USD (Guadagno)
-  const cryptoAmount = isBuying ? (parseFloat(amountInput) / price) : parseFloat(amountInput);
-  const usdValue = isBuying ? parseFloat(amountInput) : (parseFloat(amountInput) * price);
+  const val = parseFloat(amountInput);
+  
+  // Calcoli per l'anteprima
+  const cryptoAmount = isBuying ? (val / price) : val;
+  const usdValue = isBuying ? val : (val * price);
+
+  // Funzione per impostare il massimo disponibile
+  const handleSetMax = () => {
+    if (isBuying) {
+      // Se compro, il max è tutto il mio saldo in dollari
+      setAmountInput(userBalance.toString());
+    } else {
+      // Se vendo, il max è tutta la crypto che possiedo
+      setAmountInput(ownedAmount.toString());
+    }
+  };
 
   async function handleTransaction(e) {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    const val = parseFloat(amountInput);
-
-    // 1. Validazioni
     if (!val || val <= 0) {
       setError("Inserisci un importo valido.");
       setLoading(false); return;
@@ -48,18 +54,13 @@ export default function TradeModal({ coin, userData, currentUser, onClose, initi
     try {
       const userRef = doc(db, "users", currentUser.uid);
 
-      // 2. Logica Firestore (Inversa per Buy/Sell)
-      // BUY:  Balance -USD, Portfolio +Crypto
-      // SELL: Balance +USD, Portfolio -Crypto
+      // Se stiamo vendendo TUTTO (o quasi), assicuriamoci di pulire eventuali residui decimali
+      // Nota: Firestore gestisce bene i numeri, ma per sicurezza usiamo increment
       await updateDoc(userRef, {
         balance: increment(isBuying ? -val : usdValue),
         [`portfolio.${coin.id}`]: increment(isBuying ? cryptoAmount : -val)
       });
 
-      alert(isBuying 
-        ? `Hai comprato ${cryptoAmount.toFixed(6)} ${coin.symbol.toUpperCase()}` 
-        : `Hai venduto e incassato $${usdValue.toFixed(2)}`
-      );
       onClose();
     } catch (err) {
       console.error(err);
@@ -75,18 +76,12 @@ export default function TradeModal({ coin, userData, currentUser, onClose, initi
     }}>
       <div style={{ background: "#222", padding: "25px", borderRadius: "12px", width: "320px", border: "1px solid #444", boxShadow: "0 10px 25px rgba(0,0,0,0.5)" }}>
         
-        {/* Intestazione con Toggle Buy/Sell */}
+        {/* Toggle Buy/Sell */}
         <div style={{ display: "flex", marginBottom: "20px", borderBottom: "1px solid #444" }}>
-          <button 
-            onClick={() => setMode("buy")}
-            style={{ flex: 1, padding: "10px", background: "none", border: "none", color: isBuying ? "#00d1b2" : "#888", borderBottom: isBuying ? "2px solid #00d1b2" : "none", cursor: "pointer", fontWeight: "bold" }}
-          >
+          <button onClick={() => { setMode("buy"); setAmountInput(""); }} style={{ flex: 1, padding: "10px", background: "none", border: "none", color: isBuying ? "#00d1b2" : "#888", borderBottom: isBuying ? "2px solid #00d1b2" : "none", cursor: "pointer", fontWeight: "bold" }}>
             COMPRA
           </button>
-          <button 
-            onClick={() => setMode("sell")}
-            style={{ flex: 1, padding: "10px", background: "none", border: "none", color: !isBuying ? "#ff3860" : "#888", borderBottom: !isBuying ? "2px solid #ff3860" : "none", cursor: "pointer", fontWeight: "bold" }}
-          >
+          <button onClick={() => { setMode("sell"); setAmountInput(""); }} style={{ flex: 1, padding: "10px", background: "none", border: "none", color: !isBuying ? "#ff3860" : "#888", borderBottom: !isBuying ? "2px solid #ff3860" : "none", cursor: "pointer", fontWeight: "bold" }}>
             VENDI
           </button>
         </div>
@@ -96,7 +91,7 @@ export default function TradeModal({ coin, userData, currentUser, onClose, initi
         
         <div style={{ background: "#333", padding: "10px", borderRadius: "8px", margin: "15px 0", fontSize: "0.9em" }}>
           <p>Disponibile: <strong>${userBalance.toLocaleString()}</strong></p>
-          <p>Possiedi: <strong>{ownedAmount.toFixed(6)} {coin.symbol.toUpperCase()}</strong></p>
+          <p>Possiedi: <strong>{ownedAmount.toFixed(8)} {coin.symbol.toUpperCase()}</strong></p>
         </div>
 
         {error && <p style={{ color: "#ff3860", fontSize: "0.9em", textAlign: "center" }}>{error}</p>}
@@ -105,19 +100,43 @@ export default function TradeModal({ coin, userData, currentUser, onClose, initi
           <label style={{ fontSize: "0.8em", color: "#aaa" }}>
             {isBuying ? "Importo in USD ($)" : `Quantità ${coin.symbol.toUpperCase()} da vendere`}
           </label>
-          <input 
-            type="number" 
-            step="any"
-            value={amountInput}
-            onChange={(e) => setAmountInput(e.target.value)}
-            placeholder={isBuying ? "Es. 100" : "Es. 0.5"}
-            style={{ width: "100%", padding: "12px", marginTop: "5px", marginBottom: "15px", background: "#1a1a1a", border: "1px solid #555", color: "white", borderRadius: "6px", fontSize: "16px" }}
-          />
+          
+          {/* Container Input + Tasto MAX */}
+          <div style={{ position: "relative", marginBottom: "15px", marginTop: "5px" }}>
+            <input 
+              type="number" 
+              step="any"
+              value={amountInput}
+              onChange={(e) => setAmountInput(e.target.value)}
+              placeholder="0.00"
+              style={{ width: "100%", padding: "12px", paddingRight: "50px", background: "#1a1a1a", border: "1px solid #555", color: "white", borderRadius: "6px", fontSize: "16px" }}
+            />
+            <button 
+              type="button"
+              onClick={handleSetMax}
+              style={{ 
+                position: "absolute", 
+                right: "5px", 
+                top: "5px", 
+                bottom: "5px", 
+                background: "#333", 
+                color: "#00d1b2", 
+                border: "none", 
+                borderRadius: "4px", 
+                padding: "0 10px", 
+                cursor: "pointer", 
+                fontSize: "0.8em",
+                fontWeight: "bold"
+              }}
+            >
+              MAX
+            </button>
+          </div>
           
           <div style={{ textAlign: "center", marginBottom: "20px", fontSize: "0.9em", color: isBuying ? "#00d1b2" : "#ff3860" }}>
             {isBuying 
-              ? `Riceverai ≈ ${(val => val > 0 ? (val / price).toFixed(6) : 0)(parseFloat(amountInput))} ${coin.symbol}`
-              : `Incasserai ≈ $${(val => val > 0 ? (val * price).toFixed(2) : 0)(parseFloat(amountInput))}`
+              ? `Riceverai ≈ ${(val > 0 ? (val / price).toFixed(6) : 0)} ${coin.symbol.toUpperCase()}`
+              : `Incasserai ≈ $${(val > 0 ? (val * price).toFixed(2) : 0)}`
             }
           </div>
 
