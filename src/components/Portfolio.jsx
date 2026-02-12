@@ -1,23 +1,27 @@
 // src/components/Portfolio.jsx
 import React from "react";
 
-// Nota: ora accettiamo la funzione onSellClick
 export default function Portfolio({ portfolio, coins, onSellClick }) {
   if (!portfolio || !coins) return null;
 
-  const assets = Object.entries(portfolio).map(([id, amount]) => {
-    const coinData = coins.find((c) => c.id === id);
-    return {
-      id,
-      amount,
-      value: coinData ? amount * coinData.current_price : 0,
-      name: coinData ? coinData.name : id,
-      symbol: coinData ? coinData.symbol : "",
-      image: coinData ? coinData.image : "",
-      currentPrice: coinData ? coinData.current_price : 0
-    };
-  }).filter((asset) => asset.amount > 0); // Mostra solo se ne hai > 0
+  const assets = Object.entries(portfolio)
+    .map(([id, amount]) => {
+      const coinData = coins.find((c) => c.id === id);
+      return {
+        id,
+        amount,
+        value: coinData ? amount * coinData.current_price : 0,
+        name: coinData ? coinData.name : id,
+        symbol: coinData ? coinData.symbol : "",
+        image: coinData ? coinData.image : "",
+        currentPrice: coinData ? coinData.current_price : 0
+      };
+    })
+    // MODIFICA QUI: Filtriamo via tutto ciò che è praticamente zero
+    // Usiamo 0.000001 invece di 0 secco per evitare problemi di virgola mobile
+    .filter((asset) => asset.amount > 0.000001); 
 
+  // Calcolo totale
   const totalValue = assets.reduce((sum, asset) => sum + asset.value, 0);
 
   return (
@@ -25,7 +29,10 @@ export default function Portfolio({ portfolio, coins, onSellClick }) {
       <h3 style={{ marginBottom: "15px" }}>Il tuo Portafoglio</h3>
       
       {assets.length === 0 ? (
-        <p style={{ color: "#888" }}>Portafoglio vuoto.</p>
+        <div style={{ textAlign: "center", padding: "20px", color: "#888" }}>
+          <p>Il tuo portafoglio è vuoto.</p>
+          <small>Compra crypto dal mercato qui sotto per iniziare!</small>
+        </div>
       ) : (
         <>
           <div style={{ marginBottom: "15px", fontSize: "1.2em" }}>
