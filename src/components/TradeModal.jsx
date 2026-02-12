@@ -61,6 +61,12 @@ export default function TradeModal({ coin, userData, currentUser, onClose, initi
         [`portfolio.${coin.id}`]: increment(isBuying ? cryptoAmount : -val)
       });
 
+      const message = isBuying 
+        ? `Hai comprato ${cryptoAmount.toFixed(6)} ${coin.symbol.toUpperCase()}!`
+        : `Hai venduto ${val} ${coin.symbol.toUpperCase()} per $${usdValue.toFixed(2)}!`;
+      
+      alert(message);
+      
       onClose();
     } catch (err) {
       console.error(err);
