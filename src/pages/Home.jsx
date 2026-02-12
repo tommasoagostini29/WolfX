@@ -1,26 +1,22 @@
-// src/pages/Dashboard.jsx
+// src/pages/Home.jsx
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebase";
 import { doc, onSnapshot } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
 import { useMarketData } from "../hooks/useMarketData";
 
-import MarketTable from "../components/MarketTable";
-import TradeModal from "../components/TradeModal";
 import Portfolio from "../components/Portfolio";
+import TradeModal from "../components/TradeModal";
 
-export default function Dashboard() {
-  const { currentUser, logout } = useAuth();
-  const navigate = useNavigate();
-  
+export default function Home() {
+  const { currentUser } = useAuth();
   const [userData, setUserData] = useState(null);
-  const { coins, loading } = useMarketData();
+  const { coins } = useMarketData(); // Ci servono i prezzi per calcolare il valore del portafoglio
   
-  // Gestione Modale
+  // Gestione Modale per la VENDITA
   const [selectedCoin, setSelectedCoin] = useState(null);
-  const [modalMode, setModalMode] = useState("buy"); // "buy" oppure "sell"
 
+  // Ascolta i dati dell'utente (Saldo e Portafoglio)
   useEffect(() => {
     if (currentUser) {
       const unsubscribe = onSnapshot(doc(db, "users", currentUser.uid), (doc) => {
@@ -30,20 +26,14 @@ export default function Dashboard() {
     }
   }, [currentUser]);
 
-  // Funzioni per aprire il modale
-  const handleBuyClick = (coin) => {
-    setModalMode("buy");
-    setSelectedCoin(coin);
-  };
-
+  // Quando clicchi "Vendi" nel portafoglio
   const handleSellClick = (coin) => {
-    // Cerchiamo i dati completi della moneta (prezzo, immagine) dalla lista coins
-    // perché dal portafoglio potremmo avere dati parziali
+    // Cerchiamo i dati completi della moneta (prezzo, immagine)
     const fullCoinData = coins.find(c => c.id === coin.id) || coin;
-    setModalMode("sell");
     setSelectedCoin(fullCoinData);
   };
 
+  // Calcolo del valore totale (Saldo Cash + Valore Crypto)
   const portfolioValue = userData?.portfolio && coins.length > 0
     ? Object.entries(userData.portfolio).reduce((total, [id, amount]) => {
         const coin = coins.find(c => c.id === id);
@@ -55,14 +45,13 @@ export default function Dashboard() {
 
   return (
     <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto", paddingBottom: "80px" }}>
-      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
-        <h2 style={{ letterSpacing: "1px" }}>WolfX Trading <span style={{ color: "#00d1b2", fontSize: "0.6em" }}>Live</span></h2>
-        <button onClick={() => logout().then(() => navigate("/login"))} style={{ padding: "8px 16px", background: "#333", color: "white", border: "1px solid #555", borderRadius: "4px", cursor: "pointer" }}>
-          Esci
-        </button>
+      <header style={{ marginBottom: "30px", borderBottom: "1px solid #333", paddingBottom: "20px" }}>
+        <h2 style={{ letterSpacing: "1px", margin: 0 }}>
+          WolfX <span style={{ color: "#00d1b2", fontSize: "0.6em" }}>HOME</span>
+        </h2>
       </header>
 
-      {/* RIEPILOGO */}
+      {/* RIEPILOGO PATRIMONIO */}
       <div style={{ padding: "25px", background: "linear-gradient(135deg, #0f2027, #203a43, #2c5364)", borderRadius: "16px", marginBottom: "30px", color: "white", boxShadow: "0 10px 20px rgba(0,0,0,0.3)" }}>
         <p style={{ margin: 0, opacity: 0.7, fontSize: "0.9em", textTransform: "uppercase" }}>Patrimonio Totale</p>
         <h1 style={{ margin: "10px 0", fontSize: "42px", fontWeight: "300" }}>
@@ -70,28 +59,24 @@ export default function Dashboard() {
         </h1>
         <div style={{ display: "flex", gap: "20px", marginTop: "15px", fontSize: "0.9em", borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "15px" }}>
           <span>Cash: <strong style={{ color: "#00d1b2" }}>${userData?.balance.toLocaleString(undefined, { maximumFractionDigits: 2 })}</strong></span>
-          <span>Investimenti: <strong>${portfolioValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</strong></span>
+          <span>Asset: <strong>${portfolioValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</strong></span>
         </div>
       </div>
 
+      {/* IL TUO PORTAFOGLIO */}
       <Portfolio 
         portfolio={userData?.portfolio} 
         coins={coins} 
         onSellClick={handleSellClick} 
       />
 
-      <MarketTable 
-        coins={coins} 
-        loading={loading} 
-        onBuyClick={handleBuyClick} 
-      />
-
+      {/* MODALE (Solo per vendere, si apre se selectedCoin non è null) */}
       {selectedCoin && (
         <TradeModal 
           coin={selectedCoin} 
           userData={userData} 
           currentUser={currentUser} 
-          initialMode={modalMode} // Passiamo la modalità iniziale
+          initialMode="sell" // Apre direttamente in modalità VENDI
           onClose={() => setSelectedCoin(null)} 
         />
       )}
