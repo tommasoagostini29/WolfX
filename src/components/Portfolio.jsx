@@ -19,7 +19,7 @@ export default function Portfolio({ portfolio, coins, onSellClick }) {
     })
     // MODIFICA QUI: Filtriamo via tutto ciò che è praticamente zero
     // Usiamo 0.000001 invece di 0 secco per evitare problemi di virgola mobile
-    .filter((asset) => asset.amount > 0.000001); 
+    .filter((asset) => asset.amount > 0.00000000001); 
 
   // Calcolo totale
   const totalValue = assets.reduce((sum, asset) => sum + asset.value, 0);
