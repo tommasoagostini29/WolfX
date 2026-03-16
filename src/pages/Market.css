@@ -1,0 +1,24 @@
+/* src/pages/Market.css */
+
+.market-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+.market-header {
+  margin-bottom: 30px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 20px;
+}
+
+.market-header h2 {
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.market-header span {
+  color: #00d1b2;
+  font-size: 0.6em;
+}

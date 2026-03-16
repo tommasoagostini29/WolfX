@@ -1,0 +1,40 @@
+/* src/components/Offline.css */
+
+.offline-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #1a1a1a;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.offline-icon {
+  font-size: 50px;
+  margin-bottom: 20px;
+}
+
+.offline-text {
+  color: #888;
+  max-width: 300px;
+  margin: 10px auto;
+}
+
+.offline-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #00d1b2;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.offline-button:hover {
+  background-color: #00b89c;
+}

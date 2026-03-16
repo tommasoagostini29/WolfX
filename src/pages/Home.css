@@ -1,0 +1,60 @@
+/* src/pages/Home.css */
+
+.home-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+.home-header {
+  margin-bottom: 30px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 20px;
+}
+
+.home-header h2 {
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.home-header span {
+  color: #00d1b2;
+  font-size: 0.6em;
+}
+
+.summary-card {
+  padding: 25px;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  border-radius: 16px;
+  margin-bottom: 30px;
+  color: white;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.summary-subtitle {
+  margin: 0;
+  opacity: 0.7;
+  font-size: 0.9em;
+  text-transform: uppercase;
+}
+
+.summary-total {
+  margin: 10px 0;
+  font-size: 42px;
+  font-weight: 300;
+}
+
+.summary-details {
+  display: flex;
+  gap: 20px;
+  margin-top: 15px;
+  font-size: 0.9em;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 15px;
+}
+
+/* Applica il colore verde acqua specifico al valore del "Cash" */
+.summary-details span:first-child strong {
+  color: #00d1b2;
+}

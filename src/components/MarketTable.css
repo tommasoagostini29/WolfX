@@ -1,0 +1,75 @@
+/* src/components/MarketTable.css */
+
+.table-container {
+  margin-top: 20px;
+}
+
+.table-wrapper {
+  overflow-x: auto; /* Permette lo scroll orizzontale su schermi molto piccoli */
+}
+
+.market-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.market-table th {
+  padding: 10px;
+  border-bottom: 1px solid #444;
+  text-align: left;
+}
+
+.market-table td {
+  padding: 10px;
+  border-bottom: 1px solid #333;
+}
+
+.asset-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.asset-icon {
+  width: 25px;
+  height: 25px;
+}
+
+.asset-name {
+  font-weight: normal;
+}
+
+.asset-symbol {
+  color: #888;
+  font-size: 0.8em;
+}
+
+/* Classi per le percentuali */
+.text-green {
+  color: #00d1b2;
+}
+
+.text-red {
+  color: #ff3860;
+}
+
+/* Pulsante di acquisto */
+.buy-button {
+  padding: 5px 10px;
+  background-color: #00d1b2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.buy-button:hover {
+  background-color: #00b89c;
+}
+
+.market-loading {
+  margin-top: 20px;
+  color: #888;
+}
