@@ -1,11 +1,9 @@
-/* src/components/MarketTable.css */
-
 .table-container {
   margin-top: 20px;
 }
 
 .table-wrapper {
-  overflow-x: auto; /* Permette lo scroll orizzontale su schermi molto piccoli */
+  overflow-x: auto;
 }
 
 .market-table {
@@ -45,7 +43,6 @@
   font-size: 0.8em;
 }
 
-/* Classi per le percentuali */
 .text-green {
   color: #00d1b2;
 }
@@ -54,7 +51,6 @@
   color: #ff3860;
 }
 
-/* Pulsante di acquisto */
 .buy-button {
   padding: 5px 10px;
   background-color: #00d1b2;

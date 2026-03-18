@@ -2,7 +2,7 @@
 "name": "wolfx-trading",
 "private": true,
 "version": "1.0.0",
-"description": "WolfX - PWA per il Trading di Criptovalute in tempo reale",
+"description": "WolfX - PWA per il Trading di Criptovalute",
 "keywords": ["wolfx"],
 "author": "Tommaso Agostini",
 "type": "module",

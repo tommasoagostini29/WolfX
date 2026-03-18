@@ -1,4 +1,3 @@
-// src/components/TradeModal.jsx
 import React, { useState } from "react";
 import { db } from "../firebase";
 import { doc, updateDoc, increment } from "firebase/firestore";
@@ -55,7 +54,6 @@ export default function TradeModal({ coin, userData, currentUser, onClose, initi
         [`portfolio.${coin.id}`]: increment(isBuying ? cryptoAmount : -val)
       });
 
-      // Consider replacing this with a proper toast notification system later
       alert(isBuying 
         ? `Acquistati ${cryptoAmount.toFixed(6)} ${coin.symbol.toUpperCase()}`
         : `Venduti ${val} ${coin.symbol.toUpperCase()} per $${usdValue.toFixed(2)}`

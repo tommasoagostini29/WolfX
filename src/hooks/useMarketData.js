@@ -1,18 +1,13 @@
-// src/hooks/useMarketData.js
 import { useState, useEffect, useRef } from "react";
 
-// Simple in-memory cache to prevent CoinGecko API rate limits (HTTP 429)
 let globalCache = null;
 let lastFetchTime = 0;
-const CACHE_DURATION_MS = 120000; // 2 minutes
+const CACHE_DURATION_MS = 120000;
 
 export function useMarketData() {
   const [coins, setCoins] = useState(globalCache || []);
   const [loading, setLoading] = useState(!globalCache);
   const [error, setError] = useState(null);
-  
-  // Utilizziamo useRef per tracciare se il componente è ancora montato
-  // per evitare memory leak nelle chiamate asincrone
   const isMounted = useRef(true);
 
   useEffect(() => {

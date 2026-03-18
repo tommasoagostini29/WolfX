@@ -1,4 +1,3 @@
-// src/components/Portfolio.jsx
 import React from "react";
 import "./Portfolio.css";
 
@@ -57,8 +56,7 @@ export default function Portfolio({ portfolio, coins, onSellClick }) {
                   <td className="portfolio-cell-action">
                     <button 
                       onClick={() => onSellClick(asset)}
-                      className="sell-button"
-                    >
+                      className="sell-button">
                       Vendi
                     </button>
                   </td>

@@ -1,6 +1,5 @@
-// src/components/MarketTable.jsx
 import React from "react";
-import "./MarketTable.css"; // Importiamo gli stili
+import "./MarketTable.css";
 
 export default function MarketTable({ coins, loading, onBuyClick }) {
   
@@ -29,15 +28,13 @@ export default function MarketTable({ coins, loading, onBuyClick }) {
                   <span className="asset-symbol">{coin.symbol.toUpperCase()}</span>
                 </td>
                 <td>${coin.current_price.toLocaleString()}</td>
-                {/* Assegnazione classe dinamica basata sul valore positivo o negativo */}
                 <td className={coin.price_change_percentage_24h > 0 ? "text-green" : "text-red"}>
                   {coin.price_change_percentage_24h.toFixed(2)}%
                 </td>
                 <td>
                   <button 
                     onClick={() => onBuyClick(coin)} 
-                    className="buy-button"
-                  >
+                    className="buy-button">
                     Compra
                   </button>
                 </td>

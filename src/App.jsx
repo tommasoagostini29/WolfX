@@ -1,17 +1,13 @@
-// src/App.jsx
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
-
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Offline from "./pages/Offline";
 import Home from "./pages/Home";
 import Market from "./pages/Market";
-
 import PrivateRoute from "./components/PrivateRoute";
 import BottomNav from "./components/BottomNav";
-
 import "./App.css";
 
 function App() {

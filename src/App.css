@@ -1,7 +1,4 @@
-/* src/App.css */
-
 .app-layout {
-  /* Assicura che il contenuto non venga coperto dalla barra di navigazione fissa */
   padding-bottom: 70px;
   min-height: 100vh;
   position: relative;
