@@ -1,4 +1,3 @@
-// src/pages/Signup.jsx
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
@@ -6,7 +5,7 @@ import { db, auth } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { sendEmailVerification, signOut } from "firebase/auth";
 
-import "./Signup.css"; // Stili separati
+import "./Signup.css";
 
 export default function Signup() {
   const [email, setEmail] = useState("");

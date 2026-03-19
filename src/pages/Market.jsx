@@ -1,4 +1,3 @@
-// src/pages/Market.jsx
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebase";
@@ -8,7 +7,7 @@ import { useMarketData } from "../hooks/useMarketData";
 import MarketTable from "../components/MarketTable";
 import TradeModal from "../components/TradeModal";
 
-import "./Market.css"; // CSS esterno
+import "./Market.css";
 
 export default function Market() {
   const { currentUser } = useAuth();
@@ -17,7 +16,6 @@ export default function Market() {
   const [userData, setUserData] = useState(null);
   const [selectedCoin, setSelectedCoin] = useState(null);
 
-  // Sync user data for balance validation in TradeModal
   useEffect(() => {
     if (!currentUser) return;
     

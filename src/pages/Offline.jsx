@@ -1,6 +1,5 @@
-// src/components/Offline.jsx (o src/pages/Offline.jsx)
 import React from "react";
-import "./Offline.css"; // Importiamo gli stili esterni
+import "./Offline.css";
 
 export default function Offline() {
   const handleReload = () => {

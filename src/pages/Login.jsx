@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
@@ -25,7 +24,6 @@ export default function Login() {
       
       const userCredential = await login(email, password);
       
-      // Require email verification before allowing full access
       if (!userCredential.user.emailVerified) {
         await sendEmailVerification(userCredential.user);
         await signOut(auth);
@@ -40,7 +38,6 @@ export default function Login() {
       console.error("Login error:", err);
       setError("Email o password errati.");
     } finally {
-      // Usiamo finally per assicurarci che il loading si spenga in ogni caso (successo o errore)
       setLoading(false); 
     }
   }

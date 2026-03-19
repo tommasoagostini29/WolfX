@@ -1,5 +1,3 @@
-/* src/pages/Home.css */
-
 .home-container {
   padding: 20px;
   max-width: 800px;
@@ -54,7 +52,6 @@
   padding-top: 15px;
 }
 
-/* Applica il colore verde acqua specifico al valore del "Cash" */
 .summary-details span:first-child strong {
   color: #00d1b2;
 }

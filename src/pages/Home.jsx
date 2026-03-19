@@ -27,12 +27,10 @@ export default function Home() {
   }, [currentUser]);
 
   const handleSellClick = (coin) => {
-    // Fallback: se per qualche motivo la moneta non è nei dati di mercato, usiamo i dati parziali
     const fullCoinData = coins.find(c => c.id === coin.id) || coin;
     setSelectedCoin(fullCoinData);
   };
 
-  // Ottimizzazione: calcoliamo il valore solo se cambiano portfolio o prezzi
   const portfolioValue = useMemo(() => {
     if (!userData?.portfolio || coins.length === 0) return 0;
     
