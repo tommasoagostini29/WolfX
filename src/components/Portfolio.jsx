@@ -21,7 +21,7 @@ const Portfolio = ({ portfolio, coins, onSellClick }) => {
   const valoreTotale = assetPersonali.reduce((somma, asset) => somma + asset.value, 0);
 
   return (
-    <div className="contenitore-portfolio">
+    <div className="container-portfolio">
       <h3>Il tuo Portafoglio</h3>
       
       {assetPersonali.length === 0 ? (
