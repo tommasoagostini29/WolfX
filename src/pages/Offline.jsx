@@ -1,21 +1,22 @@
-import React from "react";
 import "./Offline.css";
 
-export default function Offline() {
-  const handleReload = () => {
+const Offline = () => {
+  const ricaricaPagina = () => {
     window.location.reload();
   };
 
   return (
-    <div className="offline-container">
+    <div className="container-offline">
       <div className="offline-icon">📡</div>
       <h2>Sei Offline</h2>
       <p className="offline-text">
-        Sembra che non ci sia connessione internet. WolfX ha bisogno della rete per i dati di mercato in tempo reale.
+        Sembra che tu sia senza internet. WolfX ha bisogno della rete per i dati di mercato in tempo reale.
       </p>
-      <button onClick={handleReload} className="offline-button">
+      <button onClick={ricaricaPagina} className="offline-button">
         Riprova
       </button>
     </div>
   );
-}
+};
+
+export default Offline;

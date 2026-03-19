@@ -1,43 +1,42 @@
-import React from "react";
 import "./Portfolio.css";
 
-export default function Portfolio({ portfolio, coins, onSellClick }) {
+const Portfolio = ({ portfolio, coins, onSellClick }) => {
   if (!portfolio || !coins) return null;
 
-  const assets = Object.entries(portfolio)
-    .map(([id, amount]) => {
-      const coinData = coins.find((c) => c.id === id);
+  const assetPersonali = Object.entries(portfolio)
+    .map(([id, quantita]) => {
+      const datiMoneta = coins.find((c) => c.id === id);
       return {
         id,
-        amount,
-        value: coinData ? amount * coinData.current_price : 0,
-        name: coinData ? coinData.name : id,
-        symbol: coinData ? coinData.symbol : "",
-        image: coinData ? coinData.image : "",
-        currentPrice: coinData ? coinData.current_price : 0
+        amount: quantita,
+        value: datiMoneta ? quantita * datiMoneta.current_price : 0,
+        name: datiMoneta ? datiMoneta.name : id,
+        symbol: datiMoneta ? datiMoneta.symbol : "",
+        image: datiMoneta ? datiMoneta.image : "",
+        currentPrice: datiMoneta ? datiMoneta.current_price : 0
       };
     })
     .filter((asset) => asset.amount > 0);
 
-  const totalValue = assets.reduce((sum, asset) => sum + asset.value, 0);
+  const valoreTotale = assetPersonali.reduce((somma, asset) => somma + asset.value, 0);
 
   return (
-    <div className="portfolio-container">
+    <div className="contenitore-portfolio">
       <h3>Il tuo Portafoglio</h3>
       
-      {assets.length === 0 ? (
+      {assetPersonali.length === 0 ? (
         <div className="portfolio-empty">
           <p>Portafoglio vuoto.</p>
         </div>
       ) : (
         <>
           <div className="portfolio-summary">
-            Valore Asset: <strong>$ {totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+            Valore Asset: <strong>$ {valoreTotale.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
           </div>
 
           <table className="portfolio-table">
             <tbody>
-              {assets.map((asset) => (
+              {assetPersonali.map((asset) => (
                 <tr key={asset.id}>
                   <td className="portfolio-cell-info">
                     {asset.image && <img src={asset.image} alt={asset.name} className="portfolio-icon" />}
@@ -68,4 +67,6 @@ export default function Portfolio({ portfolio, coins, onSellClick }) {
       )}
     </div>
   );
-}
+};
+
+export default Portfolio;

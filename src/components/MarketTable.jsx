@@ -1,12 +1,11 @@
-import React from "react";
 import "./MarketTable.css";
 
-export default function MarketTable({ coins, loading, onBuyClick }) {
+const MarketTable = ({ coins, loading, onBuyClick }) => {
   
   if (loading) return <p className="market-loading">Caricamento prezzi...</p>;
 
   return (
-    <div className="table-container">
+    <div className="container-tabella">
       <h3>Mercato Crypto (Live)</h3>
       
       <div className="table-wrapper">
@@ -20,20 +19,20 @@ export default function MarketTable({ coins, loading, onBuyClick }) {
             </tr>
           </thead>
           <tbody>
-            {coins.map((coin) => (
-              <tr key={coin.id}>
+            {coins.map((moneta) => (
+              <tr key={moneta.id}>
                 <td className="asset-cell">
-                  <img src={coin.image} alt={coin.name} className="asset-icon" />
-                  <span className="asset-name">{coin.name}</span>
-                  <span className="asset-symbol">{coin.symbol.toUpperCase()}</span>
+                  <img src={moneta.image} alt={moneta.name} className="asset-icon" />
+                  <span className="asset-name">{moneta.name}</span>
+                  <span className="asset-symbol">{moneta.symbol.toUpperCase()}</span>
                 </td>
-                <td>${coin.current_price.toLocaleString()}</td>
-                <td className={coin.price_change_percentage_24h > 0 ? "text-green" : "text-red"}>
-                  {coin.price_change_percentage_24h.toFixed(2)}%
+                <td>${moneta.current_price.toLocaleString()}</td>
+                <td className={moneta.price_change_percentage_24h > 0 ? "text-green" : "text-red"}>
+                  {moneta.price_change_percentage_24h.toFixed(2)}%
                 </td>
                 <td>
                   <button 
-                    onClick={() => onBuyClick(coin)} 
+                    onClick={() => onBuyClick(moneta)} 
                     className="buy-button">
                     Compra
                   </button>
@@ -45,4 +44,6 @@ export default function MarketTable({ coins, loading, onBuyClick }) {
       </div>
     </div>
   );
-}
+};
+
+export default MarketTable;

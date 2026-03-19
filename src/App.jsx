@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import { Toaster } from "react-hot-toast";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Offline from "./pages/Offline";
@@ -10,28 +11,29 @@ import PrivateRoute from "./components/PrivateRoute";
 import BottomNav from "./components/BottomNav";
 import "./App.css";
 
-function App() {
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
+const App = () => {
+  const [connesso, setConnesso] = useState(navigator.onLine);
 
   useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
+    const tornaOnline = () => setConnesso(true);
+    const vaiOffline = () => setConnesso(false);
     
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
+    window.addEventListener("online", tornaOnline);
+    window.addEventListener("offline", vaiOffline);
     
     return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("online", tornaOnline);
+      window.removeEventListener("offline", vaiOffline);
     };
   }, []);
 
-  if (!isOnline) return <Offline />;
+  if (!connesso) return <Offline />;
 
   return (
     <Router>
       <AuthProvider>
-        <div className="app-layout">
+        <div className="container-app">
+          <Toaster position="top-center" />
           <Routes>
             <Route 
               path="/" 
@@ -49,7 +51,6 @@ function App() {
                 </PrivateRoute>
               } 
             />
-            
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
           </Routes>
@@ -59,6 +60,6 @@ function App() {
       </AuthProvider>
     </Router>
   );
-}
+};
 
 export default App;

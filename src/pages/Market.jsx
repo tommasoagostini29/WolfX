@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebase";
 import { doc, onSnapshot } from "firebase/firestore";
@@ -9,29 +9,29 @@ import TradeModal from "../components/TradeModal";
 
 import "./Market.css";
 
-export default function Market() {
+const Market = () => {
   const { currentUser } = useAuth();
   const { coins, loading } = useMarketData();
   
-  const [userData, setUserData] = useState(null);
-  const [selectedCoin, setSelectedCoin] = useState(null);
+  const [datiUtente, setDatiUtente] = useState(null);
+  const [monetaSelezionata, setMonetaSelezionata] = useState(null);
 
   useEffect(() => {
     if (!currentUser) return;
     
-    const unsubscribe = onSnapshot(doc(db, "users", currentUser.uid), (doc) => {
-      if (doc.exists()) setUserData(doc.data());
+    const unsub = onSnapshot(doc(db, "users", currentUser.uid), (documento) => {
+      if (documento.exists()) setDatiUtente(documento.data());
     });
     
-    return () => unsubscribe();
+    return () => unsub();
   }, [currentUser]);
 
-  const handleBuyClick = (coin) => {
-    setSelectedCoin(coin);
+  const apriAcquisto = (moneta) => {
+    setMonetaSelezionata(moneta);
   };
 
   return (
-    <div className="market-container">
+    <div className="container-mercato">
       <header className="market-header">
         <h2>
           Mercato <span>LIVE</span>
@@ -41,18 +41,20 @@ export default function Market() {
       <MarketTable 
         coins={coins} 
         loading={loading} 
-        onBuyClick={handleBuyClick} 
+        onBuyClick={apriAcquisto} 
       />
 
-      {selectedCoin && (
+      {monetaSelezionata && (
         <TradeModal 
-          coin={selectedCoin} 
-          userData={userData} 
+          coin={monetaSelezionata} 
+          userData={datiUtente} 
           currentUser={currentUser} 
           initialMode="buy"
-          onClose={() => setSelectedCoin(null)} 
+          onClose={() => setMonetaSelezionata(null)} 
         />
       )}
     </div>
   );
-}
+};
+
+export default Market;

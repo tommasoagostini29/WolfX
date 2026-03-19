@@ -1,23 +1,22 @@
-import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 import "./BottomNav.css";
 
-export default function BottomNav() {
+const BottomNav = () => {
   const { logout } = useAuth();
-  const location = useLocation();
+  const percorso = useLocation();
 
-  if (location.pathname === "/login" || location.pathname === "/signup") {
+  if (percorso.pathname === "/login" || percorso.pathname === "/signup") {
     return null;
   }
 
   return (
-    <nav className="bottom-nav">
+    <nav className="barra-navigazione">
       
       <Link 
         to="/" 
-        className={`nav-item ${location.pathname === "/" ? "active" : ""}`}
+        className={`nav-item ${percorso.pathname === "/" ? "active" : ""}`}
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
@@ -28,7 +27,7 @@ export default function BottomNav() {
 
       <Link 
         to="/market" 
-        className={`nav-item ${location.pathname === "/market" ? "active" : ""}`}
+        className={`nav-item ${percorso.pathname === "/market" ? "active" : ""}`}
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <line x1="12" y1="20" x2="12" y2="10"></line>
@@ -49,4 +48,6 @@ export default function BottomNav() {
 
     </nav>
   );
-}
+};
+
+export default BottomNav;

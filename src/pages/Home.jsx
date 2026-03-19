@@ -1,49 +1,47 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useMarketData } from "../hooks/useMarketData";
-
 import Portfolio from "../components/Portfolio";
 import TradeModal from "../components/TradeModal";
-
 import "./Home.css";
 
-export default function Home() {
+const Home = () => {
   const { currentUser } = useAuth();
   const { coins } = useMarketData();
   
-  const [userData, setUserData] = useState(null);
-  const [selectedCoin, setSelectedCoin] = useState(null);
+  const [datiUtente, setDatiUtente] = useState(null);
+  const [monetaSelezionata, setMonetaSelezionata] = useState(null);
 
   useEffect(() => {
     if (!currentUser) return;
     
-    const unsubscribe = onSnapshot(doc(db, "users", currentUser.uid), (doc) => {
-      if (doc.exists()) setUserData(doc.data());
+    const unsub = onSnapshot(doc(db, "users", currentUser.uid), (documento) => {
+      if (documento.exists()) setDatiUtente(documento.data());
     });
     
-    return () => unsubscribe();
+    return () => unsub();
   }, [currentUser]);
 
-  const handleSellClick = (coin) => {
-    const fullCoinData = coins.find(c => c.id === coin.id) || coin;
-    setSelectedCoin(fullCoinData);
+  const apriVendita = (moneta) => {
+    const datiCompleti = coins.find(c => c.id === moneta.id) || moneta;
+    setMonetaSelezionata(datiCompleti);
   };
 
-  const portfolioValue = useMemo(() => {
-    if (!userData?.portfolio || coins.length === 0) return 0;
+  const valorePortafoglio = useMemo(() => {
+    if (!datiUtente?.portfolio || coins.length === 0) return 0;
     
-    return Object.entries(userData.portfolio).reduce((total, [id, amount]) => {
+    return Object.entries(datiUtente.portfolio).reduce((totale, [id, quantita]) => {
       const coin = coins.find(c => c.id === id);
-      return total + (coin ? amount * coin.current_price : 0);
+      return totale + (coin ? quantita * coin.current_price : 0);
     }, 0);
-  }, [userData?.portfolio, coins]);
+  }, [datiUtente?.portfolio, coins]);
 
-  const totalBalance = (userData?.balance || 0) + portfolioValue;
+  const saldoTotale = (datiUtente?.balance || 0) + valorePortafoglio;
 
   return (
-    <div className="home-container">
+    <div className="container-home">
       <header className="home-header">
         <h2>
           WolfX <span>HOME</span>
@@ -53,30 +51,32 @@ export default function Home() {
       <div className="summary-card">
         <p className="summary-subtitle">Patrimonio Totale</p>
         <h1 className="summary-total">
-          $ {totalBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          $ {saldoTotale.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         </h1>
         
         <div className="summary-details">
-          <span>Cash: <strong>${(userData?.balance || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</strong></span>
-          <span>Asset: <strong>${portfolioValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</strong></span>
+          <span>Cash: <strong>${(datiUtente?.balance || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</strong></span>
+          <span>Asset: <strong>${valorePortafoglio.toLocaleString(undefined, { maximumFractionDigits: 2 })}</strong></span>
         </div>
       </div>
 
       <Portfolio 
-        portfolio={userData?.portfolio} 
+        portfolio={datiUtente?.portfolio} 
         coins={coins} 
-        onSellClick={handleSellClick} 
+        onSellClick={apriVendita} 
       />
 
-      {selectedCoin && (
+      {monetaSelezionata && (
         <TradeModal 
-          coin={selectedCoin} 
-          userData={userData} 
+          coin={monetaSelezionata} 
+          userData={datiUtente} 
           currentUser={currentUser} 
           initialMode="sell" 
-          onClose={() => setSelectedCoin(null)} 
+          onClose={() => setMonetaSelezionata(null)} 
         />
       )}
     </div>
   );
-}
+};
+
+export default Home;

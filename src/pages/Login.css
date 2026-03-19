@@ -1,4 +1,4 @@
-.login-container {
+.container-login {
   padding: 20px;
   max-width: 400px;
   margin: 50px auto;
@@ -7,7 +7,7 @@
   color: white;
 }
 
-.login-container h2 {
+.contenitore-login h2 {
   text-align: center;
 }
 

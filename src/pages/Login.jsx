@@ -1,54 +1,53 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { auth } from "../firebase";
 import { signOut, sendEmailVerification } from "firebase/auth";
-
 import "./Login.css";
 
-export default function Login() {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [errore, setErrore] = useState("");
+  const [caricamento, setCaricamento] = useState(false);
   
   const { login } = useAuth();
-  const navigate = useNavigate();
+  const naviga = useNavigate();
 
-  async function handleSubmit(e) {
+  const gestisciLogin = async (e) => {
     e.preventDefault();
 
     try {
-      setError("");
-      setLoading(true);
+      setErrore("");
+      setCaricamento(true);
       
-      const userCredential = await login(email, password);
+      const credenziali = await login(email, password);
       
-      if (!userCredential.user.emailVerified) {
-        await sendEmailVerification(userCredential.user);
+      if (!credenziali.user.emailVerified) {
+        await sendEmailVerification(credenziali.user);
         await signOut(auth);
         
-        setError("Account non verificato. Ti abbiamo inviato un nuovo link via email. Controlla anche lo spam.");
-        setLoading(false);
+        setErrore("Account non verificato. Ti abbiamo inviato un nuovo link via email. Controlla anche lo spam.");
+        setCaricamento(false);
         return;
       }
 
-      navigate("/");
+      naviga("/");
     } catch (err) {
-      console.error("Login error:", err);
-      setError("Email o password errati.");
+      console.error("Problema col login:", err);
+      setErrore("Email o password errati.");
     } finally {
-      setLoading(false); 
+      setCaricamento(false); 
     }
-  }
+  };
 
   return (
-    <div className="login-container">
+    <div className="container-login">
       <h2>Accedi a WolfX</h2>
       
-      {error && <p className="login-error">{error}</p>}
+      {errore && <p className="login-error">{errore}</p>}
       
-      <form onSubmit={handleSubmit} className="login-form">
+      <form onSubmit={gestisciLogin} className="login-form">
         <input 
           type="email" 
           required 
@@ -64,8 +63,8 @@ export default function Login() {
           placeholder="Password" 
         />
         
-        <button disabled={loading} type="submit" className="login-button">
-          {loading ? "Accesso..." : "Entra"}
+        <button disabled={caricamento} type="submit" className="login-button">
+          {caricamento ? "Accesso..." : "Entra"}
         </button>
       </form>
       
@@ -74,4 +73,6 @@ export default function Login() {
       </div>
     </div>
   );
-}
+};
+
+export default Login;

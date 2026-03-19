@@ -1,72 +1,70 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { db, auth } from "../firebase"; 
 import { doc, setDoc } from "firebase/firestore";
 import { sendEmailVerification, signOut } from "firebase/auth";
+import toast from "react-hot-toast";
 
 import "./Signup.css";
 
-export default function Signup() {
+const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [confermaPassword, setConfermaPassword] = useState("");
+  const [errore, setErrore] = useState("");
+  const [caricamento, setCaricamento] = useState(false);
   
   const { signup } = useAuth();
-  const navigate = useNavigate();
+  const naviga = useNavigate();
 
-  async function handleSubmit(e) {
+  const gestisciRegistrazione = async (e) => {
     e.preventDefault();
 
-    if (password !== passwordConfirm) {
-      return setError("Le password non coincidono.");
+    if (password !== confermaPassword) {
+      return setErrore("Le password non coincidono.");
     }
 
     try {
-      setError("");
-      setLoading(true);
+      setErrore("");
+      setCaricamento(true);
 
       await signup(email, password);
-      const user = auth.currentUser;
+      const utente = auth.currentUser;
 
-      // Initialize user profile in Firestore with starting balance
-      await setDoc(doc(db, "users", user.uid), {
+      await setDoc(doc(db, "users", utente.uid), {
         email: email,
         balance: 10000,
         portfolio: {}
       });
 
-      await sendEmailVerification(user);
+      await sendEmailVerification(utente);
       await signOut(auth);
 
-      // Nota: in futuro potresti sostituire questo alert con un componente Toast
-      alert("Registrazione completata! Ti abbiamo inviato un'email di verifica. Controlla la tua casella di posta.");
-      navigate("/login");
+      toast.success("Registrazione completata! Ti abbiamo inviato un'email di verifica.");
+      naviga("/login");
 
     } catch (err) {
-      console.error("Signup error:", err);
-      // Fallback basilare per errori comuni
+      console.error("Problema con la registrazione:", err);
       if (err.code === 'auth/email-already-in-use') {
-        setError("Questa email è già registrata.");
+        setErrore("Questa email è già registrata.");
       } else if (err.code === 'auth/weak-password') {
-        setError("La password deve essere di almeno 6 caratteri.");
+        setErrore("La password deve essere di almeno 6 caratteri.");
       } else {
-        setError("Si è verificato un errore durante la registrazione.");
+        setErrore("Si è verificato un errore durante la registrazione.");
       }
     } finally {
-      setLoading(false);
+      setCaricamento(false);
     }
-  }
+  };
 
   return (
-    <div className="signup-container">
+    <div className="container-signup">
       <h2>Registrati a WolfX</h2>
       
-      {error && <p className="signup-error">{error}</p>}
+      {errore && <p className="signup-error">{errore}</p>}
       
-      <form onSubmit={handleSubmit} className="signup-form">
+      <form onSubmit={gestisciRegistrazione} className="signup-form">
         <input 
           type="email" 
           required 
@@ -84,13 +82,13 @@ export default function Signup() {
         <input 
           type="password" 
           required 
-          value={passwordConfirm} 
-          onChange={e => setPasswordConfirm(e.target.value)} 
+          value={confermaPassword} 
+          onChange={e => setConfermaPassword(e.target.value)} 
           placeholder="Conferma Password" 
         />
         
-        <button disabled={loading} type="submit" className="signup-button">
-          {loading ? "Creazione in corso..." : "Registrati"}
+        <button disabled={caricamento} type="submit" className="signup-button">
+          {caricamento ? "Creazione in corso..." : "Registrati"}
         </button>
       </form>
       
@@ -99,4 +97,6 @@ export default function Signup() {
       </div>
     </div>
   );
-}
+};
+
+export default Signup;
