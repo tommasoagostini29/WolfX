@@ -9,7 +9,7 @@ WolfX è una Progressive Web App (PWA) di trading per criptovalute. Permette agl
 * **Front-end**: React.js, Vite.
 * **Autenticazione**: Firebase Authentication, con verifica dell'email.
 * **Database**: Firebase Firestore.
-* **PWA (Progressive Web App)**: manifest.json (manifest.webmanifest) e service worker, pagina di fallback e installabile.
+* **PWA (Progressive Web App)**: Mainfest e service worker, pagina di fallback e installabile.
 * **API Dati di Mercato**: CoinGecko API.
 * **Hosting & Deploy**: Firebase Hosting e GitHub.
 
