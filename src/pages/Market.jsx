@@ -19,6 +19,7 @@ const Market = () => {
   useEffect(() => {
     if (!currentUser) return;
     
+    /* onSnapshot è in attesa di modifiche */
     const unsub = onSnapshot(doc(db, "users", currentUser.uid), (documento) => {
       if (documento.exists()) setDatiUtente(documento.data());
     });
@@ -26,6 +27,7 @@ const Market = () => {
     return () => unsub();
   }, [currentUser]);
 
+  /* prende la moneta che si vuole comprare e la salva nello stato. qui react fa apparire il modale */
   const apriAcquisto = (moneta) => {
     setMonetaSelezionata(moneta);
   };
@@ -38,12 +40,14 @@ const Market = () => {
         </h2>
       </header>
 
+      {/* dobbiamo passare le proprietà perchè MarketTable non sa nulla di coingecko o di firebase*/}
       <MarketTable 
         coins={coins} 
         loading={loading} 
         onBuyClick={apriAcquisto} 
       />
 
+      {/* stesso codice della home ma con buy. stesso codice che fa due cose diverse. */}
       {monetaSelezionata && (
         <TradeModal 
           coin={monetaSelezionata} 

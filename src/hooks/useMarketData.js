@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
+/* variabili globali */
 let cacheGlobale = null;
 let ultimoFetch = 0;
 const DURATA_CACHE = 120000;
@@ -16,7 +17,7 @@ export const useMarketData = () => {
     const prendiPrezzi = async () => {
       const adesso = Date.now();
       
-      if (cacheGlobale && (adesso - ultimoFetch < DURATA_CACHE)) {
+      if (cacheGlobale && (adesso - ultimoFetch < DURATA_CACHE)) {      /* ogni 2 minuti viene fatta chiamata API */
         if (montato.current) {
           setMonete(cacheGlobale);
           setCaricamento(false);
@@ -25,9 +26,9 @@ export const useMarketData = () => {
       }
 
       try {
-        const res = await fetch(
+        const res = await fetch(       
           "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false"
-        );
+        );   /* chiamata all'API pubblica CoinGecko */
 
         if (!res.ok) {
           if (res.status === 429) throw new Error("Rate limit superato");
@@ -43,7 +44,7 @@ export const useMarketData = () => {
           setMonete(dati);
           setErrore(null);
         }
-      } catch (err) {
+      } catch (err) {            /* in caso di errori */
         console.warn("Problema col fetch dei prezzi:", err.message);
         
         if (montato.current) {
@@ -69,6 +70,7 @@ export const useMarketData = () => {
     };
   }, []);
 
+  /* restituisco un oggetto con i dati necessari */
   return { 
     coins: monete, 
     loading: caricamento, 

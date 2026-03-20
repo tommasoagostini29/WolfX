@@ -21,6 +21,7 @@ const Signup = () => {
   const gestisciRegistrazione = async (e) => {
     e.preventDefault();
 
+    /* per la conferma della password */
     if (password !== confermaPassword) {
       return setErrore("Le password non coincidono.");
     }
@@ -29,9 +30,11 @@ const Signup = () => {
       setErrore("");
       setCaricamento(true);
 
+      /* creiamo l'utente su firebase authentication */
       await signup(email, password);
       const utente = auth.currentUser;
 
+      /* crea il portafoglio assegnato sempre allo stesso utente */
       await setDoc(doc(db, "users", utente.uid), {
         email: email,
         balance: 10000,
@@ -41,6 +44,7 @@ const Signup = () => {
       await sendEmailVerification(utente);
       await signOut(auth);
 
+      /* notifica */
       toast.success("Registrazione completata! Ti abbiamo inviato un'email di verifica.");
       naviga("/login");
 
@@ -87,6 +91,7 @@ const Signup = () => {
           placeholder="Conferma Password" 
         />
         
+        {/* questo evita problemi di doppio clicl e doppia registrazione */}
         <button disabled={caricamento} type="submit" className="signup-button">
           {caricamento ? "Creazione in corso..." : "Registrati"}
         </button>

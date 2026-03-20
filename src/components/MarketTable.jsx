@@ -2,7 +2,7 @@ import "./MarketTable.css";
 
 const MarketTable = ({ coins, loading, onBuyClick }) => {
   
-  if (loading) return <p className="market-loading">Caricamento prezzi...</p>;
+  if (loading) return <p className="market-loading">Caricamento prezzi...</p>; /* in caso non si carichino i dati */
 
   return (
     <div className="container-tabella">
@@ -21,16 +21,20 @@ const MarketTable = ({ coins, loading, onBuyClick }) => {
           <tbody>
             {coins.map((moneta) => (
               <tr key={moneta.id}>
+                {/* cella 1 logo e nome */}
                 <td className="asset-cell">
                   <img src={moneta.image} alt={moneta.name} className="asset-icon" />
                   <span className="asset-name">{moneta.name}</span>
                   <span className="asset-symbol">{moneta.symbol.toUpperCase()}</span>
                 </td>
+                {/* cella 2 prezzo in dollari */}
                 <td>${moneta.current_price.toLocaleString()}</td>
+                {/* cella 3 percentuale di salita o scesa */}
                 <td className={moneta.price_change_percentage_24h > 0 ? "text-green" : "text-red"}>
                   {moneta.price_change_percentage_24h.toFixed(2)}%
                 </td>
                 <td>
+                  {/* cella 4 bottone compra */}
                   <button 
                     onClick={() => onBuyClick(moneta)} 
                     className="buy-button">

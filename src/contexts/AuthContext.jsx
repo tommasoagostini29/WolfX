@@ -15,11 +15,11 @@ export const AuthProvider = ({ children }) => {
   const [utente, setUtente] = useState(null);
   const [inCaricamento, setInCaricamento] = useState(true);
 
-  const signup = (email, password) => createUserWithEmailAndPassword(auth, email, password);
+  const signup = (email, password) => createUserWithEmailAndPassword(auth, email, password); /* ho creato delle funzioni che solo più semplici da chiamare rispetto a quelel fornite da firebase*/
   
   const login = (email, password) => signInWithEmailAndPassword(auth, email, password);
   
-  const logout = () => signOut(auth);
+  const logout = () => signOut(auth); 
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     signup,
     login,
     logout
-  };
+  }; /* questo è l'oggetto che volevamo creare poi da poter passare a tutta l'app */
 
   return (
     <AuthContext.Provider value={authData}>

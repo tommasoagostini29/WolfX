@@ -33,12 +33,12 @@ const App = () => {
     <Router>
       <AuthProvider>
         <div className="container-app">
-          <Toaster position="top-center" />
+          <Toaster position="top-center" />    {/* ho installato react-hot-toast per utilizzare le notifiche toast e evitare gli alert bloccanti e poco estetici */}
           <Routes>
             <Route 
               path="/" 
               element={
-                <PrivateRoute>
+                <PrivateRoute> {/* PrivateRoute fa da bodyguard alle pagine Home e Market così da proteggerle in caso qualcuno non sia loggato */}
                   <Home />
                 </PrivateRoute>
               } 

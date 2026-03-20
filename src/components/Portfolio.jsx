@@ -1,12 +1,13 @@
 import "./Portfolio.css";
 
 const Portfolio = ({ portfolio, coins, onSellClick }) => {
-  if (!portfolio || !coins) return null;
+  if (!portfolio || !coins) return null; /* aspetta i dati se ancora non sono stati ancora caricati */
 
+  /* trasformo un oggetto in un array di coppie [[nome, quantità]] */
   const assetPersonali = Object.entries(portfolio)
     .map(([id, quantita]) => {
       const datiMoneta = coins.find((c) => c.id === id);
-      return {
+      return {     /* nuovo oggetto per la tabella */
         id,
         amount: quantita,
         value: datiMoneta ? quantita * datiMoneta.current_price : 0,
@@ -16,9 +17,9 @@ const Portfolio = ({ portfolio, coins, onSellClick }) => {
         currentPrice: datiMoneta ? datiMoneta.current_price : 0
       };
     })
-    .filter((asset) => asset.amount > 0);
+    .filter((asset) => asset.amount > 0); /* evita di avere valori uguali a 0 nella tabella */
 
-  const valoreTotale = assetPersonali.reduce((somma, asset) => somma + asset.value, 0);
+  const valoreTotale = assetPersonali.reduce((somma, asset) => somma + asset.value, 0); /* somma il valore di tutti gli asset */
 
   return (
     <div className="container-portfolio">
@@ -43,15 +44,17 @@ const Portfolio = ({ portfolio, coins, onSellClick }) => {
                     <div>
                       <div className="portfolio-name">{asset.name}</div>
                       <div className="portfolio-amount">
-                        {asset.amount.toFixed(8).replace(/\.?0+$/, "")} {asset.symbol.toUpperCase()}
+                        {asset.amount.toLocaleString(undefined, { maximumFractionDigits: 8 })} {asset.symbol.toUpperCase()}
                       </div>
                     </div>
                   </td>
                   
+                  {/* controvalore in dollari */}
                   <td className="portfolio-cell-value">
                     <div>${asset.value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
                   </td>
                   
+                  {/* bottone di vendita */}
                   <td className="portfolio-cell-action">
                     <button 
                       onClick={() => onSellClick(asset)}

@@ -5,18 +5,20 @@ import toast from "react-hot-toast";
 import "./TradeModal.css";
 
 const TradeModal = ({ coin, userData, currentUser, onClose, initialMode = "buy" }) => {
+  /* stati per gestire cosa sta facendo l'utente dentro il modale */
   const [modalita, setModalita] = useState(initialMode);
   const [inputImporto, setInputImporto] = useState("");
   const [caricamento, setCaricamento] = useState(false);
   const [errore, setErrore] = useState("");
 
-  const prezzoAttuale = coin.current_price || coin.currentPrice;
+  const prezzoAttuale = coin.current_price || coin.currentPrice; /* coingecko usa entrambi */
   const quantitaPosseduta = userData?.portfolio?.[coin.id] || 0;
   const saldoUtente = userData?.balance || 0;
   const staComprando = modalita === "buy";
   
   const valoreNumerico = parseFloat(inputImporto);
   
+  /* tasse di cambio dollari-crypto */
   const quantitaCrypto = staComprando ? (valoreNumerico / prezzoAttuale) : valoreNumerico;
   const valoreDollari = staComprando ? valoreNumerico : (valoreNumerico * prezzoAttuale);
 
@@ -29,18 +31,21 @@ const TradeModal = ({ coin, userData, currentUser, onClose, initialMode = "buy" 
     setErrore("");
     setCaricamento(true);
 
+    /* importo maggiore di 0 */
     if (!valoreNumerico || valoreNumerico <= 0) {
       setErrore("Inserisci un importo valido.");
       setCaricamento(false); 
       return;
     }
 
+    /* hai abbastanza soldi */
     if (staComprando && valoreNumerico > saldoUtente) {
       setErrore("Fondi insufficienti.");
       setCaricamento(false); 
       return;
     }
 
+    /* hai abbastanza crypto */
     if (!staComprando && valoreNumerico > quantitaPosseduta) {
       setErrore(`Quantità di ${coin.symbol.toUpperCase()} insufficiente.`);
       setCaricamento(false); 
@@ -50,6 +55,7 @@ const TradeModal = ({ coin, userData, currentUser, onClose, initialMode = "buy" 
     try {
       const riferimentoUtente = doc(db, "users", currentUser.uid);
 
+      /* l'utilizzo di increment evita bug di click doppi avuti durante lo sviluppo */
       await updateDoc(riferimentoUtente, {
         balance: increment(staComprando ? -valoreNumerico : valoreDollari),
         [`portfolio.${coin.id}`]: increment(staComprando ? quantitaCrypto : -valoreNumerico)
@@ -73,6 +79,7 @@ const TradeModal = ({ coin, userData, currentUser, onClose, initialMode = "buy" 
     <div className="modal-overlay">
       <div className="modal-content">
         
+        {/* due bottoni per compra o vendi */}
         <div className="modal-tabs">
           <button 
             className={`modal-tab ${staComprando ? "active-buy" : ""}`}
@@ -93,7 +100,7 @@ const TradeModal = ({ coin, userData, currentUser, onClose, initialMode = "buy" 
         
         <div className="modal-balances">
           <p>Disponibile: <strong>${saldoUtente.toLocaleString()}</strong></p>
-          <p>Possiedi: <strong>{quantitaPosseduta.toFixed(8)} {coin.symbol.toUpperCase()}</strong></p>
+          <p>Possiedi: <strong>{quantitaPosseduta.toFixed(8)} {coin.symbol.toUpperCase()}</strong></p> {/* 8 decimali come tipico delle crypto */}
         </div>
 
         {errore && <p className="modal-error">{errore}</p>}

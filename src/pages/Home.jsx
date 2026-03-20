@@ -17,6 +17,7 @@ const Home = () => {
   useEffect(() => {
     if (!currentUser) return;
     
+    /* quando il tuo saldo cambia firebase avvisa onSnapshot che aggiorna datiUtente e sistema la pagina */
     const unsub = onSnapshot(doc(db, "users", currentUser.uid), (documento) => {
       if (documento.exists()) setDatiUtente(documento.data());
     });
@@ -24,11 +25,13 @@ const Home = () => {
     return () => unsub();
   }, [currentUser]);
 
+  /* poi passata questa funzione al portfolio */
   const apriVendita = (moneta) => {
     const datiCompleti = coins.find(c => c.id === moneta.id) || moneta;
     setMonetaSelezionata(datiCompleti);
   };
 
+  /* useMemo ci serve per calcolare il valore del portfolio ma solo se cambiano i prezzi live o le monete che possiedo */
   const valorePortafoglio = useMemo(() => {
     if (!datiUtente?.portfolio || coins.length === 0) return 0;
     
@@ -60,12 +63,14 @@ const Home = () => {
         </div>
       </div>
 
+      {/* passiamo al portfolio */}
       <Portfolio 
         portfolio={datiUtente?.portfolio} 
         coins={coins} 
         onSellClick={apriVendita} 
       />
 
+      {/* se la monetaSelezionata non è NULL allora fai il TradeModal */}
       {monetaSelezionata && (
         <TradeModal 
           coin={monetaSelezionata} 

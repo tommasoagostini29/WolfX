@@ -14,6 +14,7 @@ const Login = () => {
   const { login } = useAuth();
   const naviga = useNavigate();
 
+  /* in questo modo è react a gestire l'invio dei dati tramite il tasto entra*/
   const gestisciLogin = async (e) => {
     e.preventDefault();
 
@@ -23,7 +24,7 @@ const Login = () => {
       
       const credenziali = await login(email, password);
       
-      if (!credenziali.user.emailVerified) {
+      if (!credenziali.user.emailVerified) {          /* non mi piaceva l'idea che si potesse entrare con qualsiasi email inventata quindi ho voluto mettere la verifica tramite email*/
         await sendEmailVerification(credenziali.user);
         await signOut(auth);
         
@@ -33,7 +34,7 @@ const Login = () => {
       }
 
       naviga("/");
-    } catch (err) {
+    } catch (err) {        /* in caso di email o password errata */
       console.error("Problema col login:", err);
       setErrore("Email o password errati.");
     } finally {

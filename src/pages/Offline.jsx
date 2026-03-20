@@ -1,13 +1,14 @@
+import { WifiOff } from "lucide-react";
 import "./Offline.css";
 
 const Offline = () => {
   const ricaricaPagina = () => {
-    window.location.reload();
+    window.location.reload(); /* ricarica la pagina */
   };
 
   return (
     <div className="container-offline">
-      <div className="offline-icon">📡</div>
+      <WifiOff size={64} color="#ff3860" className="offline-icon" />
       <h2>Sei Offline</h2>
       <p className="offline-text">
         Sembra che tu sia senza internet. WolfX ha bisogno della rete per i dati di mercato in tempo reale.
