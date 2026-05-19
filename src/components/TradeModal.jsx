@@ -144,7 +144,7 @@ const TradeModal = ({ coin, userData, currentUser, onClose, initialMode = "buy" 
               disabled={caricamento} 
               className={`btn-confirm ${staComprando ? "bg-buy" : "bg-sell"}`}
             >
-              {caricamento ? "Elaborazione..." : (staComprando ? "CONFERMA" : "VENDI")}
+              {caricamento ? "Elaborazione..." : (staComprando ? "COMPRA" : "VENDI")}
             </button>
           </div>
         </form>
